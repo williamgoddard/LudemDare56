@@ -1,8 +1,13 @@
-extends Node2D
+class_name GameCharacter extends Node2D
 
 const SPEED = 300.0
 const ROOM_X_BOARDER = 64
 const ROOM_Y_BOARDER = 64 
+
+@export var target_room : Room = null
+@export var bedroom : Room = null
+@export var desire := Global.Desire.NONE
+
 @export var move_up : bool
 @export var move_down : bool
 @export var move_left : bool
