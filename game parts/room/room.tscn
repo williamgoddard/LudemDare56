@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://c32i5wkic03ee"]
+[gd_scene load_steps=4 format=3 uid="uid://c32i5wkic03ee"]
 
 [ext_resource type="Script" path="res://game parts/room/room.gd" id="1_kdvso"]
+[ext_resource type="Texture2D" uid="uid://b6eqf6bjxt0lk" path="res://game parts/room/sprites/RoomEmpty.png" id="2_gq7g6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_strnr"]
 
@@ -8,4 +9,12 @@
 script = ExtResource("1_kdvso")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(6.4, 6.4)
 shape = SubResource("RectangleShape2D_strnr")
+
+[node name="RoomSprite" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_gq7g6")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
