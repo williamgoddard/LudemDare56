@@ -10,10 +10,11 @@ const ROOM_Y_BOARDER = 64
 @export var stop_all_movement : bool
 
 @onready var random_timer = $Random_Timer
-@onready var incativity_timer = $Incativity_Timer
+@onready var inactivity_timer = $Inactivity_Timer
 const WANDER_TIME := 5.0 #Time until wadering
 const INACTIVITY_TIME := 5.0 #Time until wadering
-
+var target_position
+var randomly_moving
 
 signal movement_finished(direction)
 
@@ -27,13 +28,20 @@ func _physics_process(delta):
 	check_movement_finished()
 	if Input.is_action_pressed("ui_left") or move_left:
 		position.x -= SPEED * delta
+		randomly_moving = false
 	if Input.is_action_pressed("ui_right") or move_right:
 		position.x += SPEED * delta
+		randomly_moving = false
 	if Input.is_action_pressed("ui_up") or move_up:
 		position.y -= SPEED * delta
+		randomly_moving = false
 	if Input.is_action_pressed("ui_down") or move_down:
 		position.y += SPEED * delta
-
+		randomly_moving = false
+	#if randomly_moving:
+		#position = position.move_toward(target_position, SPEED * delta)
+	#if position == target_position:
+		#inactivity_timer.start()
 
 func check_stop_movement():
 	if stop_all_movement:
