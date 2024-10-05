@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b6eqf6bjxt0lk"
-path="res://.godot/imported/RoomEmpty.png-eb69ce5152d2260ca10bcddf8aac5922.ctex"
+path="res://.godot/imported/RoomEmpty.png-06f9a8ad21f255af4dfa6aa4a7fb0763.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://LudemDare56/game parts/room/sprites/RoomEmpty.png"
-dest_files=["res://.godot/imported/RoomEmpty.png-eb69ce5152d2260ca10bcddf8aac5922.ctex"]
+source_file="res://game parts/room/sprites/RoomEmpty.png"
+dest_files=["res://.godot/imported/RoomEmpty.png-06f9a8ad21f255af4dfa6aa4a7fb0763.ctex"]
 
 [params]
 
