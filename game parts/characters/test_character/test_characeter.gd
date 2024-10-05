@@ -1,16 +1,26 @@
 extends Node2D
 
-
 const SPEED = 300.0
 const ROOM_X_BOARDER = 64
-const ROOM_Y_BOARDER = 64
+const ROOM_Y_BOARDER = 64 
 @export var move_up : bool
 @export var move_down : bool
 @export var move_left : bool
 @export var move_right : bool
 @export var stop_all_movement : bool
 
-signal movement_finished
+@onready var random_timer = $Random_Timer
+@onready var incativity_timer = $Incativity_Timer
+const WANDER_TIME := 5.0 #Time until wadering
+const INACTIVITY_TIME := 5.0 #Time until wadering
+
+
+signal movement_finished(direction)
+
+func _ready():
+	random_timer.wait_time = WANDER_TIME
+	
+	pass
 
 func _physics_process(delta):
 	check_stop_movement()
@@ -24,7 +34,6 @@ func _physics_process(delta):
 	if Input.is_action_pressed("ui_down") or move_down:
 		position.y += SPEED * delta
 
-	
 
 func check_stop_movement():
 	if stop_all_movement:
@@ -34,9 +43,26 @@ func check_stop_movement():
 		move_right = false
 		
 func check_movement_finished():
-	if position.x > ROOM_X_BOARDER or position.x < -ROOM_X_BOARDER:
-		movement_finished.emit()
-		print("yay")
-	if position.y > ROOM_Y_BOARDER or position.y < -ROOM_Y_BOARDER:
-		movement_finished.emit()
-		print("yay")
+	if position.y < -ROOM_Y_BOARDER:
+		movement_finished.emit(Global.Direction.UP)
+		print(Global.Direction.UP)
+	if position.y > ROOM_Y_BOARDER:
+		movement_finished.emit(Global.Direction.DOWN)
+		print(Global.Direction.DOWN)
+	if position.x < -ROOM_X_BOARDER:
+		movement_finished.emit(Global.Direction.LEFT)
+		print(Global.Direction.LEFT)
+	if position.x > ROOM_X_BOARDER:
+		movement_finished.emit(Global.Direction.RIGHT)
+		print(Global.Direction.RIGHT)
+
+func random_movement():
+	var new_x = randf_range(-32, +32)
+	pass
+
+func _on_random_timer_timeout():
+	pass # Replace with function body.
+
+
+func _on_incativity_timer_timeout():
+	pass # Replace with function body.

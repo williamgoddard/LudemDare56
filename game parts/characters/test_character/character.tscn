@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://d2qdyo0cg1vov"]
+[gd_scene load_steps=20 format=3 uid="uid://d2qdyo0cg1vov"]
 
 [ext_resource type="Script" path="res://game parts/characters/test_character/test_characeter.gd" id="1_74jxo"]
 [ext_resource type="Shader" path="res://game parts/characters/test_character/Test_shader.gdshader" id="2_jiupr"]
@@ -121,17 +121,10 @@ animations = [{
 "speed": 8.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_nx1e5"]
-size = Vector2(128, 128)
-
-[node name="Area2D" type="Area2D"]
-position = Vector2(1155, 706)
-scale = Vector2(10, 10)
-
-[node name="Character" type="Node2D" parent="."]
+[node name="Character" type="Node2D"]
 script = ExtResource("1_74jxo")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Character"]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 material = SubResource("ShaderMaterial_uepi5")
 position = Vector2(8, -22)
@@ -139,5 +132,9 @@ sprite_frames = SubResource("SpriteFrames_jwjk0")
 animation = &"idle"
 frame_progress = 0.35873
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_nx1e5")
+[node name="Random_Timer" type="Timer" parent="."]
+
+[node name="Incativity_Timer" type="Timer" parent="."]
+
+[connection signal="timeout" from="Random_Timer" to="." method="_on_random_timer_timeout"]
+[connection signal="timeout" from="Incativity_Timer" to="." method="_on_incativity_timer_timeout"]
