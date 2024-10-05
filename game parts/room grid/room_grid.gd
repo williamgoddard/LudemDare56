@@ -1,6 +1,7 @@
 class_name RoomGrid extends Node2D
 
 const GRID_SQAURE = preload("res://game parts/grid square/grid_sqaure.tscn")
+const ROOM = preload("res://game parts/room/room.tscn")
 
 const MAX_WIDTH := 10
 const MAX_HEIGHT := 10
@@ -18,9 +19,6 @@ var grid := []
 func _ready():
 	generate_grid()
 	is_ready = true
-	var test = find_shortest_path(grid[0][0], grid[2][2])
-	for i in test:
-		print(i)
 
 func generate_grid():
 	grid = []
@@ -43,6 +41,12 @@ func find_shortest_path(start_square : GridSquare, end_square : GridSquare):
 	var start_pos = start_square.grid_pos
 	var end_pos = end_square.grid_pos
 	var directions = [Vector2(1, 0), Vector2(-1, 0), Vector2(0, -1), Vector2(0, 1)]
+	var direction_decodings = {
+		Vector2(1, 0) : Global.Direction.RIGHT,
+		Vector2(-1, 0) : Global.Direction.LEFT,
+		Vector2(0, -1) : Global.Direction.UP,
+		Vector2(0, 1) : Global.Direction.DOWN
+	}
 	
 	if start_pos == null or end_pos == null or start_square.room == null or end_square.room == null:
 		return []
@@ -57,9 +61,11 @@ func find_shortest_path(start_square : GridSquare, end_square : GridSquare):
 		
 		if current == end_pos:
 				var path = []
-				while current != null:
-					path.insert(0, current)
-					current = came_from[current]
+				while current != null and came_from[current] != null:
+					var next = came_from[current]
+					var direction_vector : Vector2 = current - next
+					path.insert(0, direction_decodings[direction_vector])
+					current = next
 				return path
 		
 		for direction in directions:
