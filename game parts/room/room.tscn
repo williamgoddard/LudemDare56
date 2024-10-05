@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://c32i5wkic03ee"]
+
+[ext_resource type="Script" path="res://LudemDare56/game parts/room/room.gd" id="1_kdvso"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_strnr"]
+
+[node name="Room" type="Area2D"]
+script = ExtResource("1_kdvso")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_strnr")
