@@ -4,17 +4,20 @@
 [ext_resource type="Texture2D" uid="uid://b6eqf6bjxt0lk" path="res://game parts/room/sprites/RoomEmpty.png" id="2_gq7g6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_strnr"]
+size = Vector2(128, 128)
 
 [node name="Room" type="Area2D"]
+collision_mask = 2
 script = ExtResource("1_kdvso")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-scale = Vector2(6.4, 6.4)
 shape = SubResource("RectangleShape2D_strnr")
 
 [node name="RoomSprite" type="Sprite2D" parent="."]
 texture_filter = 1
 texture = ExtResource("2_gq7g6")
 
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="area_exited" from="." to="." method="_on_area_exited"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

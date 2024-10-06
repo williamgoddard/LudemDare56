@@ -8,8 +8,11 @@ class_name GridSquare extends Area2D
 			if room == null:
 				room = value
 				room.reparent(self)
-				room.position = Vector2(0,0)
-			else:
-				room.position = Vector2(0,0)
+				room.room_been_moved.connect(_room_been_moved)
 		elif value == null:
+			if room != null:
+				room.room_been_moved.disconnect(_room_been_moved)
 			room = null
+
+func _room_been_moved():
+	room = null
