@@ -36,6 +36,7 @@ func _character_moved_room(grid_square: GridSquare, character: GameCharacter, di
 		return
 	grid_square.room.remove_character(character)
 	target_grid_square.room.add_character(character)
+	character.process_reparent()
 
 func generate_grid():
 	grid = []
