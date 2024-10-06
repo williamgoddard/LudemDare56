@@ -14,7 +14,7 @@ var move_down : bool
 var move_left : bool
 var move_right : bool
 @export var stop_all_movement : bool
-
+@onready var animated_sprite_2d = $AnimatedSprite2D
 @onready var random_timer = $Random_Timer
 @onready var inactivity_timer = $Inactivity_Timer
 const WANDER_TIME := 5.0 #Time until wadering
@@ -35,7 +35,16 @@ func _ready():
 	random_timer.wait_time = WANDER_TIME
 	inactivity_timer.wait_time = INACTIVITY_TIME
 	state = STATES.IDLE
+	animated_sprite_2d.play("idle")
+	animated_sprite_2d.material.set_shader_parameter('New Color',get_random_color())
 	pass
+
+func get_random_color() -> Color:
+	return Color(
+		randf(),
+		randf(),
+		randf()
+	)
 
 func _physics_process(delta):
 	check_stop_movement()
