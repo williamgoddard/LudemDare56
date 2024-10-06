@@ -1,6 +1,6 @@
 class_name GameCharacter extends Node2D
 
-const SPEED = 300.0
+const SPEED = 20.0
 const ROOM_X_BOARDER = 64
 const ROOM_Y_BOARDER = 64 
 
@@ -80,7 +80,7 @@ func check_movement_finished():
 		print(Global.Direction.RIGHT)
 	if abs(position.x - internal_target_x) > 1 and internally_moving:
 		movement_finished_internal.emit()
-		pass
+	pass
 	
 
 func random_movement():
@@ -140,7 +140,7 @@ func process_next_command():
 	else:
 		state = STATES.IDLE
 
-func _on_movement_finished(direction):
+func _on_movement_finished(node_id,direction):
 	move_up = false
 	move_down = false
 	move_left = false
