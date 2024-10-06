@@ -25,8 +25,8 @@ var command_queue ##Command queue variable
 enum STATES {IDLE, WANDER, MOVING_GOAL}
 var state
 var next_vertical_command
-var internally_moving_centre
-var vik_var
+var internally_moving_centre = false
+var vik_var := false
 
 signal movement_finished(node_ID,direction)
 signal movement_finished_internal
@@ -57,6 +57,7 @@ func _physics_process(delta):
 		random_timer.start()
 	if vik_var:
 		process_reparent()
+		vik_var = false
 		
 		#randomly_moving = false
 	#if randomly_moving:
@@ -90,7 +91,9 @@ func check_movement_finished():
 	if abs(position.x - internal_target_x) > 1 and internally_moving:
 		movement_finished_internal.emit()
 	pass
-	if internally_moving_centre and abs(position.x - 0.0) > 1 and abs(position.y - 55.0) > 1:
+	#print("Position ", abs(position.y - 55.0))
+	if internally_moving_centre and abs(position.x) < 1 and abs(position.y - 55) < 1:
+		print("you are here")
 		movement_finished_internal.emit()
 
 func random_movement():
@@ -122,20 +125,23 @@ func move_toward_x(target_x):
 	internal_target_x = target_x
 	
 func go_centre():
-	if position.x < 0.0:
-		move_right = true
-		move_left = false
-	elif position.x > 0.0:
-		move_left = true
-		move_right = false
-	if position.y < 55.0:
-		move_up = false
-		move_down = true
-	elif position.y > 55.0:
-		move_up = true
-		move_down = false
-	#update target
-	internally_moving_centre = true
+	if abs(position.x) > 1:
+		if position.x < 0.0:
+			move_right = true
+			move_left = false
+		elif position.x > 0.0:
+			move_left = true
+			move_right = false
+		internally_moving_centre = true
+	if abs(position.y - 55) > 1:
+		if position.y < 55.0:
+			move_up = false
+			move_down = true
+		elif position.y > 55.0:
+			move_up = true
+			move_down = false
+		#update target
+		internally_moving_centre = true
 
 func execute_path(path):
 	internally_moving = false
@@ -183,6 +189,7 @@ func _on_movement_finished_internal():
 	move_left = false
 	move_right = false
 	internally_moving = false
+	internally_moving_centre = false
 
 	# After moving to x = 0.0, execute the stored vertical movement
 	if next_vertical_command != null:
@@ -195,6 +202,6 @@ func _on_movement_finished_internal():
 
 func process_reparent():
 	go_centre()
-	await _on_movement_finished_internal()
+	await movement_finished_internal
 	process_next_command()
 	
