@@ -135,6 +135,7 @@ frame_progress = 0.35873
 [node name="Random_Timer" type="Timer" parent="."]
 
 [node name="Inactivity_Timer" type="Timer" parent="."]
+one_shot = true
 
 [connection signal="movement_finished" from="." to="." method="_on_movement_finished"]
 [connection signal="movement_finished_internal" from="." to="." method="_on_movement_finished_internal"]

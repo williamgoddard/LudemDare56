@@ -50,7 +50,8 @@ func _physics_process(delta):
 		position.y += SPEED * delta
 	if state == STATES.IDLE:
 		inactivity_timer.start()
-	
+	if state == STATES.WANDER:
+		random_timer.start()
 		#randomly_moving = false
 	#if randomly_moving:
 		#position = position.move_toward(target_position, SPEED * delta)
@@ -83,14 +84,20 @@ func check_movement_finished():
 	
 
 func random_movement():
-	var new_x = randf_range(-32, +32)
+	var new_offset = randf_range(-32, +32)
+	var new_x = position.x + new_offset
+	new_x = clamp(new_x, -ROOM_X_BOARDER, ROOM_X_BOARDER)
+	move_toward_x(new_x)
 	pass
 
 func _on_random_timer_timeout():
+	random_movement()
 	pass # Replace with function body.
 
 
 func _on_incativity_timer_timeout():
+	random_movement()
+	state = STATES.WANDER
 	pass # Replace with function body.
 
 func move_toward_x(target_x):
