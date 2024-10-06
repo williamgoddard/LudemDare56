@@ -136,5 +136,7 @@ frame_progress = 0.35873
 
 [node name="Inactivity_Timer" type="Timer" parent="."]
 
+[connection signal="movement_finished" from="." to="." method="_on_movement_finished"]
+[connection signal="movement_finished_internal" from="." to="." method="_on_movement_finished_internal"]
 [connection signal="timeout" from="Random_Timer" to="." method="_on_random_timer_timeout"]
 [connection signal="timeout" from="Inactivity_Timer" to="." method="_on_incativity_timer_timeout"]
