@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://c32i5wkic03ee"]
 
 [ext_resource type="Script" path="res://game parts/room/room.gd" id="1_kdvso"]
-[ext_resource type="Texture2D" uid="uid://b6eqf6bjxt0lk" path="res://game parts/room/sprites/RoomEmpty.png" id="2_gq7g6"]
+[ext_resource type="Texture2D" uid="uid://d00sucwwwhal3" path="res://game parts/room/sprites/default_1.png" id="2_dfp2d"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_strnr"]
 size = Vector2(128, 128)
@@ -18,11 +18,10 @@ shape = SubResource("RectangleShape2D_strnr")
 
 [node name="RoomBackground" type="Sprite2D" parent="."]
 texture_filter = 1
-texture = ExtResource("2_gq7g6")
+texture = ExtResource("2_dfp2d")
 
 [node name="RoomBorder" type="Sprite2D" parent="."]
 texture_filter = 1
-texture = ExtResource("2_gq7g6")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="area_exited" from="." to="." method="_on_area_exited"]
