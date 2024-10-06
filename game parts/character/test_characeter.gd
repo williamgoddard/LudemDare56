@@ -25,6 +25,9 @@ var command_queue ##Command queue variable
 enum STATES {IDLE, WANDER, MOVING_GOAL}
 var state
 var next_vertical_command
+var internally_moving_centre
+var vik_var
+
 signal movement_finished(node_ID,direction)
 signal movement_finished_internal
 
@@ -52,6 +55,9 @@ func _physics_process(delta):
 		inactivity_timer.start()
 	if state == STATES.WANDER:
 		random_timer.start()
+	if vik_var:
+		process_reparent()
+		
 		#randomly_moving = false
 	#if randomly_moving:
 		#position = position.move_toward(target_position, SPEED * delta)
@@ -81,7 +87,11 @@ func check_movement_finished():
 	if abs(position.x - internal_target_x) > 1 and internally_moving:
 		movement_finished_internal.emit()
 	pass
-	
+	if abs(position.x - internal_target_x) > 1 and internally_moving:
+		movement_finished_internal.emit()
+	pass
+	if internally_moving_centre and abs(position.x - 0.0) > 1 and abs(position.y - 55.0) > 1:
+		movement_finished_internal.emit()
 
 func random_movement():
 	var new_offset = randf_range(-32, +32)
@@ -110,6 +120,22 @@ func move_toward_x(target_x):
 	#update target
 	internally_moving = true
 	internal_target_x = target_x
+	
+func go_centre():
+	if position.x < 0.0:
+		move_right = true
+		move_left = false
+	elif position.x > 0.0:
+		move_left = true
+		move_right = false
+	if position.y < 55.0:
+		move_up = false
+		move_down = true
+	elif position.y > 55.0:
+		move_up = true
+		move_down = false
+	#update target
+	internally_moving_centre = true
 
 func execute_path(path):
 	internally_moving = false
@@ -138,6 +164,7 @@ func process_next_command():
 			Global.Direction.RIGHT:
 				move_right = true
 	else:
+		move_toward_x(0.0)
 		state = STATES.IDLE
 
 func _on_movement_finished(node_id,direction):
@@ -147,7 +174,7 @@ func _on_movement_finished(node_id,direction):
 	move_right = false
 	
 	await get_tree().create_timer(0.1).timeout
-	process_next_command()
+	#process_next_command()
 	pass
 
 func _on_movement_finished_internal():
@@ -165,3 +192,9 @@ func _on_movement_finished_internal():
 			Global.Direction.DOWN:
 				move_down = true
 		next_vertical_command = null  # Clear after execution
+
+func process_reparent():
+	go_centre()
+	await _on_movement_finished_internal()
+	process_next_command()
+	
