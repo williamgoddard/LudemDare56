@@ -20,7 +20,7 @@ const WANDER_TIME := 5.0 #Time until wadering
 const INACTIVITY_TIME := 5.0 #Time until wadering
 var target_position
 var randomly_moving
-
+var command_queue ##Command queue variable
 signal movement_finished(direction)
 
 func _ready():
@@ -78,4 +78,25 @@ func _on_random_timer_timeout():
 
 
 func _on_incativity_timer_timeout():
+	pass # Replace with function body.
+
+func execute_path(path):
+	command_queue = path
+	process_next_command()
+
+
+func process_next_command():
+	if command_queue.size() > 0:
+		var movement_command = command_queue.pop_front() 
+		match movement_command:
+			Global.Direction.UP:
+				move_up = true
+			Global.Direction.DOWN:
+				move_down = true
+			Global.Direction.LEFT:
+				move_left = true
+			Global.Direction.RIGHT:
+				move_right = true
+
+func _on_movement_finished(direction):
 	pass # Replace with function body.
