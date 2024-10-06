@@ -4,28 +4,34 @@ const SPEED = 300.0
 const ROOM_X_BOARDER = 64
 const ROOM_Y_BOARDER = 64 
 
+
 @export var target_room : Room = null
 @export var bedroom : Room = null
 @export var desire := Global.Desire.NONE
 
-@export var move_up : bool
-@export var move_down : bool
-@export var move_left : bool
-@export var move_right : bool
+var move_up : bool
+var move_down : bool
+var move_left : bool
+var move_right : bool
 @export var stop_all_movement : bool
 
 @onready var random_timer = $Random_Timer
 @onready var inactivity_timer = $Inactivity_Timer
 const WANDER_TIME := 5.0 #Time until wadering
-const INACTIVITY_TIME := 5.0 #Time until wadering
-var target_position
-var randomly_moving
+const INACTIVITY_TIME := 6.0 #Time until wadering
+var internal_target_x := 0.0
+var internally_moving := false
 var command_queue ##Command queue variable
-signal movement_finished(direction)
+enum STATES {IDLE, WANDER, MOVING_GOAL}
+var state
+var next_vertical_command
+signal movement_finished(node_ID,direction)
+signal movement_finished_internal
 
 func _ready():
 	random_timer.wait_time = WANDER_TIME
-	
+	inactivity_timer.wait_time = INACTIVITY_TIME
+	state = STATES.IDLE
 	pass
 
 func _physics_process(delta):
@@ -33,16 +39,19 @@ func _physics_process(delta):
 	check_movement_finished()
 	if Input.is_action_pressed("ui_left") or move_left:
 		position.x -= SPEED * delta
-		randomly_moving = false
+		#randomly_moving = false
 	if Input.is_action_pressed("ui_right") or move_right:
 		position.x += SPEED * delta
-		randomly_moving = false
+		#randomly_moving = false
 	if Input.is_action_pressed("ui_up") or move_up:
 		position.y -= SPEED * delta
-		randomly_moving = false
+		#randomly_moving = false
 	if Input.is_action_pressed("ui_down") or move_down:
 		position.y += SPEED * delta
-		randomly_moving = false
+	if state == STATES.IDLE:
+		inactivity_timer.start()
+	
+		#randomly_moving = false
 	#if randomly_moving:
 		#position = position.move_toward(target_position, SPEED * delta)
 	#if position == target_position:
@@ -57,17 +66,21 @@ func check_stop_movement():
 		
 func check_movement_finished():
 	if position.y < -ROOM_Y_BOARDER:
-		movement_finished.emit(Global.Direction.UP)
+		movement_finished.emit(self,Global.Direction.UP)
 		print(Global.Direction.UP)
 	if position.y > ROOM_Y_BOARDER:
-		movement_finished.emit(Global.Direction.DOWN)
+		movement_finished.emit(self,Global.Direction.DOWN)
 		print(Global.Direction.DOWN)
 	if position.x < -ROOM_X_BOARDER:
-		movement_finished.emit(Global.Direction.LEFT)
+		movement_finished.emit(self,Global.Direction.LEFT)
 		print(Global.Direction.LEFT)
 	if position.x > ROOM_X_BOARDER:
-		movement_finished.emit(Global.Direction.RIGHT)
+		movement_finished.emit(self,Global.Direction.RIGHT)
 		print(Global.Direction.RIGHT)
+	if abs(position.x - internal_target_x) > 1 and internally_moving:
+		movement_finished_internal.emit()
+		pass
+	
 
 func random_movement():
 	var new_x = randf_range(-32, +32)
@@ -80,23 +93,68 @@ func _on_random_timer_timeout():
 func _on_incativity_timer_timeout():
 	pass # Replace with function body.
 
+func move_toward_x(target_x):
+	if position.x < target_x:
+		move_right = true
+		move_left = false
+	elif position.x > target_x:
+		move_left = true
+		move_right = false
+	#update target
+	internally_moving = true
+	internal_target_x = target_x
+
 func execute_path(path):
+	internally_moving = false
+	internal_target_x = 0.0
 	command_queue = path
 	process_next_command()
 
 
 func process_next_command():
 	if command_queue.size() > 0:
+		state = STATES.MOVING_GOAL
 		var movement_command = command_queue.pop_front() 
 		match movement_command:
-			Global.Direction.UP:
-				move_up = true
-			Global.Direction.DOWN:
-				move_down = true
+			Global.Direction.UP,Global.Direction.DOWN:
+				if abs(position.x - 0.0) > 1:
+					move_toward_x(0.0)
+					next_vertical_command = movement_command
+				else:
+					match movement_command:
+						Global.Direction.UP:
+							move_up = true
+						Global.Direction.DOWN:
+							move_down = true
 			Global.Direction.LEFT:
 				move_left = true
 			Global.Direction.RIGHT:
 				move_right = true
+	else:
+		state = STATES.IDLE
 
 func _on_movement_finished(direction):
-	pass # Replace with function body.
+	move_up = false
+	move_down = false
+	move_left = false
+	move_right = false
+	
+	await get_tree().create_timer(0.1).timeout
+	process_next_command()
+	pass
+
+func _on_movement_finished_internal():
+	move_up = false
+	move_down = false
+	move_left = false
+	move_right = false
+	internally_moving = false
+
+	# After moving to x = 0.0, execute the stored vertical movement
+	if next_vertical_command != null:
+		match next_vertical_command:
+			Global.Direction.UP:
+				move_up = true
+			Global.Direction.DOWN:
+				move_down = true
+		next_vertical_command = null  # Clear after execution
