@@ -20,6 +20,23 @@ func _ready():
 	generate_grid()
 	is_ready = true
 
+func _character_moved_room(grid_square: GridSquare, character: GameCharacter, direction):
+	var direction_encodings = {
+		Global.Direction.RIGHT: Vector2(1, 0),
+		Global.Direction.LEFT: Vector2(-1, 0),
+		Global.Direction.UP: Vector2(0, -1),
+		Global.Direction.DOWN: Vector2(0, 1)
+	}
+	var grid_position = grid_square.grid_pos
+	var target_grid_position = grid_position + direction_encodings[direction]
+	if not is_valid_position(target_grid_position):
+		return
+	var target_grid_square = grid[target_grid_position.x][target_grid_position.y]
+	if target_grid_square == null or target_grid_square.room == null:
+		return
+	grid_square.room.remove_character(character)
+	target_grid_square.room.add_character(character)
+
 func generate_grid():
 	grid = []
 	remove_old_grid_squares()
@@ -30,6 +47,7 @@ func generate_grid():
 			grid_square.position = Vector2(i*128, j*128)
 			grid_square.grid_pos = Vector2(i, j)
 			add_child(grid_square)
+			grid_square.character_left_room.connect(_character_moved_room)
 			grid[i].append(grid_square)
 
 func remove_old_grid_squares():

@@ -1,6 +1,7 @@
 class_name Room extends Area2D
 
 signal room_been_moved()
+signal character_left_room()
 
 @export var left_door := false
 @export var right_door := false
@@ -10,6 +11,7 @@ var hover := false
 var selected := false
 var mouse_offset := Vector2(0,0)
 var overlap_areas = []
+var characters = []
 
 func _process(delta):
 	if hover and Input.is_action_just_pressed("mouse_select") and not Global.dragging:
@@ -39,6 +41,9 @@ func _on_area_entered(area):
 func _on_area_exited(area):
 	overlap_areas.erase(area)
 
+func _on_character_leave(character, direction):
+	character_left_room.emit(character, direction)
+
 func find_closest_overlap_grid_square():
 	var best_distance : float = 999999999
 	var best_grid_square : GridSquare = null
@@ -48,3 +53,12 @@ func find_closest_overlap_grid_square():
 			best_distance = distance
 			best_grid_square = grid_square
 	return best_grid_square
+
+func add_character(character: GameCharacter):
+	character.reparent(self)
+	characters.append(character)
+	character.movement_finished.connect(_on_character_leave)
+
+func remove_character(character: GameCharacter):
+	characters.erase(character)
+	character.movement_finished.disconnect(_on_character_leave)
