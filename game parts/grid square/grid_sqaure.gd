@@ -11,9 +11,11 @@ signal character_left_room(square: GridSquare, character: GameCharacter, directi
 				room = value
 				room.reparent(self)
 				room.room_been_moved.connect(_room_been_moved)
+				room.character_left_room.connect(_character_left_room)
 		elif value == null:
 			if room != null:
 				room.room_been_moved.disconnect(_room_been_moved)
+				room.character_left_room.disconnect(_character_left_room)
 			room = null
 
 func _room_been_moved():

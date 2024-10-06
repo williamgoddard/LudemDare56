@@ -16,7 +16,11 @@ room_type = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_strnr")
 
-[node name="RoomSprite" type="Sprite2D" parent="."]
+[node name="RoomBackground" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_gq7g6")
+
+[node name="RoomBorder" type="Sprite2D" parent="."]
 texture_filter = 1
 texture = ExtResource("2_gq7g6")
 
