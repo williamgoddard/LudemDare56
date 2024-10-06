@@ -1,15 +1,14 @@
 [gd_scene load_steps=3 format=3 uid="uid://dhjllu00vc2p0"]
 
-[ext_resource type="PackedScene" uid="uid://c32i5wkic03ee" path="res://game parts/room/room.tscn" id="1_83uwf"]
-[ext_resource type="PackedScene" uid="uid://d2qdyo0cg1vov" path="res://game parts/character/character.tscn" id="2_pqtij"]
+[ext_resource type="PackedScene" uid="uid://b6l7mw6t4p8on" path="res://game parts/room grid/room_grid.tscn" id="1_6pq0i"]
+[ext_resource type="Script" path="res://test_scene.gd" id="1_8wrem"]
 
 [node name="Node2D" type="Node2D"]
+script = ExtResource("1_8wrem")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(2, 2)
 
-[node name="Room" parent="." instance=ExtResource("1_83uwf")]
-position = Vector2(-45, 77)
-
-[node name="Character" parent="Room" instance=ExtResource("2_pqtij")]
-position = Vector2(1, 61)
+[node name="RoomGrid" parent="." instance=ExtResource("1_6pq0i")]
+position = Vector2(-369, -149)
+dimensions = Vector2(5, 3)

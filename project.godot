@@ -32,6 +32,11 @@ mouse_select={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Room"
+2d_physics/layer_2="Tile"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
